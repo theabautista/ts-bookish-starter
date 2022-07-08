@@ -14,7 +14,7 @@ class BookController {
         // TODO: implement functionality
         return res.status(500).json({
             error: 'server_error',
-            error_description: 'Endpoint not implemented yet.'
+            error_description: 'Endpoint not implemented yet.',
         });
     }
 
@@ -22,7 +22,7 @@ class BookController {
         // TODO: implement functionality
         return res.status(500).json({
             error: 'server_error',
-            error_description: 'Endpoint not implemented yet.'
+            error_description: 'Endpoint not implemented yet.',
         });
     }
 }
