@@ -9,6 +9,7 @@ class HealthCheckController {
     }
 
     check = (req: Request, res: Response): Response => {
+        console.log(' hi');
         return res.status(200).json({ status: 'OK' });
     };
 }
