@@ -7,7 +7,7 @@ import { Connection, Request } from 'tedious';
 //const user = require('./routes/user');
 
 const passport = require('passport');
-require('passport');
+require('./passport');
 import healthcheckRoutes from './controllers/healthcheckController';
 import bookRoutes from './controllers/bookController';
 
