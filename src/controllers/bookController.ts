@@ -5,7 +5,7 @@ import {passw} from '../../secretStuff'
 class BookController {
     router: Router;
     config = {
-        server: "SNAKE",
+        server: "HERMITCRAB",
         options: {
           port: 1433,
           database: 'bookish',
@@ -16,7 +16,7 @@ class BookController {
         authentication: {
           type: "default",
           options: {  
-            userName: "thebau",
+            userName: "Muhanad",
             password: passw,
           }
         }
@@ -43,26 +43,22 @@ class BookController {
         let connection = new Connection(this.config);
         connection.on('connect', function(err) {
             if(err) {
-              console.log('Error: ', err)
+                console.log('Error: ', err)
             }
-            let request = new TediousRequest("select * from books", function(err, _rowCount, rows) {
+            let request = new TediousRequest("select * from Books", function(err, _rowCount, rows) {
                 if (err) {
                     console.log(err);
-                  } else {
-                    console.log(rows)
-                  }
+                } else {
+                    let books = [];
+                    for (let i = 0; i < rows.length; i++) {
+                        books.push(new Book(rows[i][1].value, rows[i][0].value));
+                    }
+                    return res.status(200).json(books);
+                }
             });
-            // request.on('row', function(columns) {
-            //     columns.forEach(function(column) {
-            //       console.log(column.value);
-            //     });
-            // });
             connection.execSql(request);
-          });
-
-          connection.connect();
-        
-          return res.status(200).json({ status: 'OK' });
+        });
+        connection.connect();
     }
 
 
@@ -72,6 +68,16 @@ class BookController {
             error: 'server_error',
             error_description: 'Endpoint not implemented yet.',
         });
+    }
+}
+
+class Book {
+    title = "";
+    isbn = 0;
+
+    constructor(title, isbn) {
+        this.title = title;
+        this.isbn = isbn;
     }
 }
 
