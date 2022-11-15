@@ -1,26 +1,29 @@
 import { Router, Request, Response } from 'express';
 import {Connection, Request as TediousRequest} from 'tedious';
 import {passw} from '../../secretStuff'
+import {dbRequest} from "../helper";
+
+
+export let config = {
+    server: "HERMITCRAB",
+    options: {
+        port: 1433,
+        database: 'bookish',
+        trustServerCertificate: true,
+        rowCollectionOnRequestCompletion: true,
+
+    },
+    authentication: {
+        type: "default",
+        options: {
+            userName: "Muhanad",
+            password: passw,
+        }
+    }
+};
 
 class BookController {
     router: Router;
-    config = {
-        server: "HERMITCRAB",
-        options: {
-          port: 1433,
-          database: 'bookish',
-          trustServerCertificate: true,
-          rowCollectionOnRequestCompletion: true,
-
-        },
-        authentication: {
-          type: "default",
-          options: {  
-            userName: "Muhanad",
-            password: passw,
-          }
-        }
-      };
     
 
     constructor() {
@@ -40,25 +43,16 @@ class BookController {
     }
 
     getBooks = (req: Request, res: Response) => {
-        let connection = new Connection(this.config);
-        connection.on('connect', function(err) {
-            if(err) {
-                console.log('Error: ', err)
+        function getBookList(rows) {
+            let books = [];
+            for (let i = 0; i < rows.length; i++) {
+                books.push(new Book(rows[i][1].value, rows[i][0].value));
             }
-            let request = new TediousRequest("select * from Books", function(err, _rowCount, rows) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    let books = [];
-                    for (let i = 0; i < rows.length; i++) {
-                        books.push(new Book(rows[i][1].value, rows[i][0].value));
-                    }
-                    return res.status(200).json(books);
-                }
-            });
-            connection.execSql(request);
-        });
-        connection.connect();
+            console.log(books[0].findOne({"title":"Shantaram","isbn":"1234567890"}));
+            return res.status(200).json(books);
+        }
+
+        dbRequest("Books", getBookList);
     }
 
 
